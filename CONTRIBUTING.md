@@ -67,9 +67,10 @@ You can copy [`_templates/origines.json`](./_templates/origines.json) or [`_temp
 | WordPress Madara / MangaThemesia / Origines | **Easy** | Extend `_templates/<theme>.json` and override only differences. |
 | Server-rendered HTML with CSS selectors | **Easy / Medium** | Use `selector`, `attr` fallbacks (`["data-src", "src"]`), `regex`, `replace`. |
 | Clean REST API (`json`) / AJAX HTML (`json-html`) | **Easy / Medium** | Supports `GET`/`POST`, `queryParams`, `formBody`, `jsonBody`, `jsonPath`, `jsonTemplate`. |
+| Inline `<script>` JSON (`__NEXT_DATA__`, `ts_reader.run`) | **Supported (`v0.4.0+`)** | Use `responseType: "json"` + `request.scriptJson` (`selector` / `regex`). |
 | Sequential / numbered CDN pages + JS token strip | **Supported** | Use `pages.numberedPages` + `stripTokensFromScript`. |
 | Cloudflare / Anti-hotlink sites | **Supported** | KumoYomi handles `Referer` DNR rules and compact Cloudflare popup verification automatically. |
-| Canvas tile descrambling / AES-encrypted payloads / `__NEXT_DATA__`-only lists | **Hard / Unsupported** | Requires core parser support in `KumoYomi/kumoyomi` before adding a JSON source. |
+| Canvas tile descrambling / AES-encrypted payloads / dynamic CSRF login flows | **Hard / Unsupported** | Requires core parser support in `KumoYomi/kumoyomi` before adding a JSON source. |
 
 ---
 
@@ -85,8 +86,8 @@ Analyze `<TARGET_SITE_URL>` and create a KumoYomi JSON source config for `KumoYo
    - Chapter list (HTML selectors, inline HTML, or AJAX/JSON endpoint)
    - Chapter page image URLs (`<img>` tags, lazy attributes, JSON API, or numbered CDN paths) and image CDN `Referer` headers
 2. Check `_templates/*.json` (`origines`, `madara`, `mangathemesia`) first — reuse `"extends"` if the site matches a template.
-3. Follow the full schema specification in `KumoYomi/docs/ADDING_SOURCES.md`. If the site relies on unsupported patterns (canvas descrambling, JS payload decryption, or hydration-only `<script>` arrays with no API), report that blocker explicitly.
-4. Write `sources/<site-id>.json`, run `node scripts/validate-and-build.mjs --check` to validate syntax and manifest rules, test the config inside KumoYomi (Firefox → Sources & Repos → Import JSON), verify cover loading and chapter reading, then open a PR to `KumoYomi-Sources/extensions-source`.
+3. Follow the full schema specification in `KumoYomi/docs/ADDING_SOURCES.md`. If the site uses `<script>` JSON hydration (`__NEXT_DATA__`, `ts_reader.run`), configure `responseType: "json"` + `request.scriptJson` (`selector` / `regex`). Only report a blocker if the site relies on unsupported patterns like canvas descrambling or per-request JS payload encryption.
+4. Write `sources/<site-id>.json`, run `node scripts/validate-and-build.mjs --check` to validate syntax and manifest rules, test the config inside KumoYomi (Firefox → Sources & Repos → Import JSON + the built-in **Inspect** debugger), verify cover loading and chapter reading, then open a PR to `KumoYomi-Sources/extensions-source`.
 ````
 
 ---
@@ -99,7 +100,7 @@ Analyze `<TARGET_SITE_URL>` and create a KumoYomi JSON source config for `KumoYo
    ```
 2. Import your `sources/<id>.json` in **KumoYomi** → **Sources & Repos** → **Import JSON (.json)** *(note: if your source uses `"extends"`, import `_templates/<template>.json` first)*.
 3. Verify inside KumoYomi:
-   - **Test** button succeeds cleanly
+   - **Test** button (or the interactive **Inspect** panel for Popular / Details / Chapters / Pages) succeeds cleanly
    - **Explore** Popular/Latest & Search return titles with working covers
    - **Manga Detail** renders metadata, genres, status, and full chapter list in proper order
    - **Reader** loads chapter pages cleanly without broken images

@@ -37,5 +37,5 @@ Want to add support for a website or fix a broken selector? You can do it manual
 ### Quick Feasibility Check
 
 - **Easy**: Sites matching `_templates/origines.json`, `_templates/madara.json`, or `_templates/mangathemesia.json` (often `< 25` lines of JSON).
-- **Easy / Medium**: Server-rendered HTML sites or clean REST JSON / AJAX endpoints (`popular`, `latest`, `search`, `mangaDetails`, `chapters`, `pages`, `numberedPages`, `warmupUrl`).
-- **Unsupported today**: Sites requiring canvas image descrambling, per-request JS AES/HMAC API signing, or HTML `<script>` JSON hydration arrays (e.g., `__NEXT_DATA__`) when no REST endpoint exists.
+- **Easy / Medium**: Server-rendered HTML sites, REST JSON / AJAX endpoints, or embedded `<script>` JSON hydration (`__NEXT_DATA__`, `ts_reader.run`) via `request.scriptJson` (`v0.4.0+`), plus `numberedPages` and `warmupUrl`.
+- **Unsupported today**: Sites requiring canvas image descrambling, per-request JS AES/HMAC API signing, or multi-step dynamic login/CSRF flows.
