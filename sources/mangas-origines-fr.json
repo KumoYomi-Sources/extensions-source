@@ -1,0 +1,10 @@
+{
+  "id": "mangas-origines-fr",
+  "name": "Mangas-Origines.fr",
+  "lang": "fr",
+  "extends": "origines",
+  "baseUrl": "https://mangas-origines.fr",
+  "vars": {
+    "mangaPath": "oeuvre"
+  }
+}

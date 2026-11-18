@@ -1,0 +1,13 @@
+{
+  "name": "KumoYomi Extensions Source",
+  "description": "Dépôt communautaire officiel des sources JSON et modèles de scraping pour KumoYomi.",
+  "version": "1.0.0",
+  "templates": [
+    "./_templates/madara.json",
+    "./_templates/mangathemesia.json",
+    "./_templates/origines.json"
+  ],
+  "sources": [
+    "./sources/mangas-origines-fr.json"
+  ]
+}
