@@ -8,6 +8,7 @@
     "./_templates/origines.json"
   ],
   "sources": [
+    "./sources/mangamoins-fr.json",
     "./sources/mangas-origines-fr.json"
   ]
 }

@@ -17,6 +17,7 @@ Dépôt communautaire séparé hébergeant les modèles génériques et les fich
 <!-- SOURCES_TABLE_START -->
 | ID | Nom | Langue | Modèle | Site | Config |
 | :--- | :--- | :---: | :--- | :--- | :--- |
+| `mangamoins-fr` | **MangaMoins** | `FR` | _sur-mesure_ | [https://mangamoins.com](https://mangamoins.com) | [`sources/mangamoins-fr.json`](./sources/mangamoins-fr.json) |
 | `mangas-origines-fr` | **Mangas-Origines.fr** | `FR` | `origines` | [https://mangas-origines.fr](https://mangas-origines.fr) | [`sources/mangas-origines-fr.json`](./sources/mangas-origines-fr.json) |
 <!-- SOURCES_TABLE_END -->
 

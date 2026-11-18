@@ -1,0 +1,206 @@
+{
+  "id": "mangamoins-fr",
+  "name": "MangaMoins",
+  "lang": "fr",
+  "baseUrl": "https://mangamoins.com",
+  "warmupUrl": "{{baseUrl}}",
+  "popular": {
+    "request": {
+      "method": "GET",
+      "url": "{{baseUrl}}/api/v1/trend",
+      "responseType": "json"
+    },
+    "itemsPath": "data",
+    "fields": {
+      "title": {
+        "jsonPath": "title",
+        "decodeHtmlEntities": true
+      },
+      "url": {
+        "jsonPath": ["slug", "mangaSlug"],
+        "prefix": "{{baseUrl}}/manga/"
+      },
+      "cover": {
+        "jsonPath": "cover",
+        "absoluteUrl": true
+      }
+    }
+  },
+  "latest": {
+    "request": {
+      "method": "GET",
+      "url": "{{baseUrl}}/api/v1/mangas",
+      "queryParams": {
+        "page": "{{page}}",
+        "limit": "20"
+      },
+      "responseType": "json"
+    },
+    "itemsPath": "data",
+    "fields": {
+      "title": {
+        "jsonPath": "title",
+        "decodeHtmlEntities": true
+      },
+      "url": {
+        "jsonPath": ["mangaSlug", "slug"],
+        "prefix": "{{baseUrl}}/manga/"
+      },
+      "cover": {
+        "jsonPath": "cover",
+        "absoluteUrl": true
+      },
+      "latestChapter": {
+        "jsonPath": "chapitre",
+        "prefix": "Chapitre "
+      }
+    },
+    "hasNextPageCalc": {
+      "totalPath": "total",
+      "limitPath": "limit",
+      "pagePath": "page",
+      "pageSize": 20
+    },
+    "pageSize": 20
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "url": "{{baseUrl}}/api/v1/explore",
+      "queryParams": {
+        "page": "{{page}}",
+        "limit": "20",
+        "q": "{{query}}"
+      },
+      "responseType": "json"
+    },
+    "itemsPath": "data",
+    "fields": {
+      "title": {
+        "jsonPath": "title",
+        "decodeHtmlEntities": true
+      },
+      "url": {
+        "jsonPath": ["slug", "mangaSlug"],
+        "prefix": "{{baseUrl}}/manga/"
+      },
+      "cover": {
+        "jsonPath": "cover",
+        "absoluteUrl": true
+      }
+    },
+    "hasNextPageCalc": {
+      "totalPath": "total",
+      "limitPath": "limit",
+      "pagePath": "page",
+      "pageSize": 20
+    },
+    "pageSize": 20
+  },
+  "mangaDetails": {
+    "request": {
+      "method": "GET",
+      "url": "{{baseUrl}}/api/v1/manga",
+      "queryParams": {
+        "manga": "{{mangaSlug}}"
+      },
+      "responseType": "json"
+    },
+    "fields": {
+      "title": {
+        "jsonPath": "info.title",
+        "decodeHtmlEntities": true
+      },
+      "cover": {
+        "jsonPath": "info.cover",
+        "absoluteUrl": true
+      },
+      "author": {
+        "jsonPath": "info.author",
+        "decodeHtmlEntities": true
+      },
+      "artist": {
+        "jsonPath": "info.author",
+        "decodeHtmlEntities": true
+      },
+      "description": {
+        "jsonPath": "info.description",
+        "decodeHtmlEntities": true
+      },
+      "status": {
+        "jsonPath": "info.status"
+      }
+    },
+    "statusMap": {
+      "en cours": "ongoing",
+      "termin": "completed",
+      "pause": "hiatus",
+      "abandon": "cancelled"
+    }
+  },
+  "chapters": {
+    "request": {
+      "method": "GET",
+      "url": "{{baseUrl}}/api/v1/manga",
+      "queryParams": {
+        "manga": "{{mangaSlug}}"
+      },
+      "responseType": "json"
+    },
+    "itemsPath": "chapters",
+    "fields": {
+      "title": {
+        "jsonTemplate": "Chapitre {{num}} - {{title}}",
+        "decodeHtmlEntities": true,
+        "replace": [
+          {
+            "pattern": "\\s*-\\s*$",
+            "replacement": ""
+          },
+          {
+            "pattern": "^(Chapitre\\s+\\S+)\\s*-\\s*\\1$",
+            "replacement": "$1",
+            "flags": "i"
+          }
+        ]
+      },
+      "url": {
+        "jsonPath": "slug",
+        "replace": [
+          {
+            "pattern": "^/?\\??scan/",
+            "replacement": ""
+          },
+          {
+            "pattern": "^/+",
+            "replacement": ""
+          }
+        ],
+        "prefix": "{{baseUrl}}/scan/"
+      },
+      "chapterNumber": {
+        "jsonPath": "num"
+      },
+      "date": {
+        "jsonPath": "time"
+      }
+    }
+  },
+  "pages": {
+    "request": {
+      "method": "GET",
+      "url": "{{baseUrl}}/api/v1/scan",
+      "queryParams": {
+        "slug": "{{chapterSlug}}"
+      },
+      "responseType": "json"
+    },
+    "numberedPages": {
+      "countJsonPath": "pageNumbers",
+      "baseUrlJsonPath": "pagesBaseUrl",
+      "padStart": 2,
+      "extension": "webp",
+      "stripSuffixes": ["_b"]
+    }
+  }
+}
