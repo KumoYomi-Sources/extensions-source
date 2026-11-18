@@ -1,6 +1,6 @@
 {
   "name": "KumoYomi Extensions Source",
-  "description": "Dépôt communautaire officiel des sources JSON et modèles de scraping pour KumoYomi.",
+  "description": "Official community repository of JSON source configs and scraping templates for KumoYomi.",
   "version": "1.0.0",
   "templates": [
     "./_templates/madara.json",

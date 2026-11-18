@@ -1,6 +1,6 @@
 {
-  "name": "KumoYomi Extensions Source (Bundle Autonome)",
-  "description": "Archive JSON autonome contenant tous les modèles et toutes les sources.",
+  "name": "KumoYomi Extensions Source (Standalone Bundle)",
+  "description": "Self-contained JSON bundle containing all templates and sources.",
   "version": "1.0.0",
   "templates": [
     {

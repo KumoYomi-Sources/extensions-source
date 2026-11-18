@@ -24,17 +24,17 @@ jobs:
         with:
           node-version: 22
 
-      - name: Valider et régénérer index.json, bundle.json et README.md
+      - name: Validate and regenerate index.json, bundle.json and README.md
         run: node scripts/validate-and-build.mjs
 
-      - name: Commiter les fichiers générés si modifiés
+      - name: Commit generated files if changed
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add index.json bundle.json README.md
-            git commit -m "chore: régénère index.json et bundle.json"
+            git commit -m "chore: regenerate index.json, bundle.json and README.md"
             git push
           else
-            echo "index.json et bundle.json sont déjà à jour."
+            echo "index.json and bundle.json are already up to date."
           fi

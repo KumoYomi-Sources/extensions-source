@@ -24,7 +24,7 @@ function readJsonFiles(dir) {
     try {
       return { file, data: JSON.parse(readFileSync(fullPath, 'utf8')) };
     } catch (err) {
-      fail(`JSON invalide dans ${file}: ${err.message}`);
+      fail(`Invalid JSON in ${file}: ${err.message}`);
       return { file, data: null };
     }
   });
@@ -35,16 +35,16 @@ const templateMap = new Map();
 
 for (const { file, data } of templateEntries) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    fail(`Modèle ${file}: objet JSON attendu.`);
+    fail(`Template ${file}: expected JSON object.`);
     continue;
   }
   const expectedId = basename(file, '.json');
   if (typeof data.id !== 'string' || data.id.trim() !== expectedId) {
-    fail(`Modèle ${file}: "id" ("${data.id}") doit correspondre au nom de fichier "${expectedId}".`);
+    fail(`Template ${file}: "id" ("${data.id}") must match filename "${expectedId}".`);
     continue;
   }
   if (templateMap.has(data.id)) {
-    fail(`Modèle en doublon: "${data.id}".`);
+    fail(`Duplicate template id: "${data.id}".`);
     continue;
   }
   templateMap.set(data.id, data);
@@ -56,55 +56,55 @@ const validSources = [];
 
 for (const { file, data } of sourceEntries) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    fail(`Source ${file}: objet JSON attendu.`);
+    fail(`Source ${file}: expected JSON object.`);
     continue;
   }
   const expectedId = basename(file, '.json');
   if (typeof data.id !== 'string' || data.id.trim() !== expectedId) {
-    fail(`Source ${file}: "id" ("${data.id}") doit correspondre au nom de fichier "${expectedId}".`);
+    fail(`Source ${file}: "id" ("${data.id}") must match filename "${expectedId}".`);
     continue;
   }
   if (typeof data.name !== 'string' || !data.name.trim()) {
-    fail(`Source ${file}: champ "name" requis.`);
+    fail(`Source ${file}: required field "name" missing.`);
     continue;
   }
   if (typeof data.lang !== 'string' || !data.lang.trim()) {
-    fail(`Source ${file}: champ "lang" requis (ex: "fr", "en").`);
+    fail(`Source ${file}: required field "lang" missing (e.g., "en", "fr", "es", "zh").`);
     continue;
   }
   if (typeof data.baseUrl !== 'string') {
-    fail(`Source ${file}: champ "baseUrl" requis.`);
+    fail(`Source ${file}: required field "baseUrl" missing.`);
     continue;
   }
   try {
     const u = new URL(data.baseUrl);
     if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-      fail(`Source ${file}: "baseUrl" doit utiliser http:// ou https://.`);
+      fail(`Source ${file}: "baseUrl" must use http:// or https://.`);
       continue;
     }
     if (data.baseUrl.endsWith('/')) {
-      fail(`Source ${file}: "baseUrl" ne doit pas se terminer par "/".`);
+      fail(`Source ${file}: "baseUrl" must not end with "/".`);
       continue;
     }
   } catch {
-    fail(`Source ${file}: "baseUrl" invalide ("${data.baseUrl}").`);
+    fail(`Source ${file}: invalid "baseUrl" ("${data.baseUrl}").`);
     continue;
   }
 
   if (data.extends) {
     if (!templateMap.has(data.extends)) {
-      fail(`Source ${file}: le modèle "${data.extends}" n'existe pas dans _templates/.`);
+      fail(`Source ${file}: template "${data.extends}" does not exist in _templates/.`);
       continue;
     }
   } else if (!data.mangaDetails || !data.chapters || !data.pages) {
     fail(
-      `Source ${file}: sans "extends", les blocs "mangaDetails", "chapters" et "pages" sont obligatoires.`,
+      `Source ${file}: without "extends", blocks "mangaDetails", "chapters", and "pages" are required.`,
     );
     continue;
   }
 
   if (sourceMap.has(data.id)) {
-    fail(`ID de source en doublon: "${data.id}".`);
+    fail(`Duplicate source id: "${data.id}".`);
     continue;
   }
   sourceMap.set(data.id, data);
@@ -116,7 +116,7 @@ if (process.exitCode && process.exitCode !== 0) {
 }
 
 console.log(
-  `✅ Validation OK : ${templateMap.size} modèle(s) et ${validSources.length} source(s) valides.`,
+  `✅ Validation passed: ${templateMap.size} template(s) and ${validSources.length} valid source(s).`,
 );
 
 if (CHECK_ONLY) {
@@ -128,15 +128,15 @@ const sourceFiles = validSources.map((s) => `./sources/${s.file}`);
 
 const indexManifest = {
   name: 'KumoYomi Extensions Source',
-  description: 'Dépôt communautaire officiel des sources JSON et modèles de scraping pour KumoYomi.',
+  description: 'Official community repository of JSON source configs and scraping templates for KumoYomi.',
   version: '1.0.0',
   templates: templateFiles,
   sources: sourceFiles,
 };
 
 const bundleManifest = {
-  name: 'KumoYomi Extensions Source (Bundle Autonome)',
-  description: 'Archive JSON autonome contenant tous les modèles et toutes les sources.',
+  name: 'KumoYomi Extensions Source (Standalone Bundle)',
+  description: 'Self-contained JSON bundle containing all templates and sources.',
   version: '1.0.0',
   templates: Array.from(templateMap.values()),
   sources: validSources.map((s) => s.data),
@@ -155,12 +155,12 @@ try {
 
   if (startIdx >= 0 && endIdx > startIdx) {
     const rows = validSources.map(({ file, data }) => {
-      const tpl = data.extends ? `\`${data.extends}\`` : '_sur-mesure_';
+      const tpl = data.extends ? `\`${data.extends}\`` : '_custom_';
       return `| \`${data.id}\` | **${data.name}** | \`${data.lang.toUpperCase()}\` | ${tpl} | [${data.baseUrl}](${data.baseUrl}) | [\`sources/${file}\`](./sources/${file}) |`;
     });
     const table = [
       startMarker,
-      '| ID | Nom | Langue | Modèle | Site | Config |',
+      '| ID | Name | Lang | Template | Website | Config |',
       '| :--- | :--- | :---: | :--- | :--- | :--- |',
       ...rows,
       endMarker,
@@ -171,7 +171,7 @@ try {
     writeFileSync(readmePath, updated, 'utf8');
   }
 } catch {
-  // README optionnel lors d'un premier run
+  // README optional on bootstrap run
 }
 
-console.log('✅ index.json, bundle.json et README.md mis à jour.');
+console.log('✅ index.json, bundle.json, and README.md updated.');
